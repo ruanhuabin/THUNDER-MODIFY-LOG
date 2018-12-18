@@ -60,6 +60,11 @@
 #define FILE_NAME_LENGTH 1024
 
 /**
+ *  maximum length of prefix string
+ */
+#define PREFIX_MAX_LEN 1024
+
+/**
  * maximum length of SQL command
  */
 #define SQL_COMMAND_LENGTH 1024

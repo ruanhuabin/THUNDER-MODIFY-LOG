@@ -190,6 +190,15 @@ struct OptimiserPara
 
     char dstPrefix[FILE_NAME_LENGTH];
 
+#define KEY_OUTPUT_DIRECTORY "Output Directory"
+
+    char outputDirectory[FILE_NAME_LENGTH];
+
+#define KEY_OUTPUT_FILE_PREFIX "Prefix of Output File"
+
+    char outputFilePrefix[PREFIX_MAX_LEN];
+
+
 #define KEY_CORE_FSC "Calculate FSC Using Core Region"
 
     bool coreFSC;

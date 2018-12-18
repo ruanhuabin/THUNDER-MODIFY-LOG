@@ -131,6 +131,9 @@ void readPara(OptimiserPara& dst,
     copy_string(dst.db, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_DB], KEY_DB).asString());
     copy_string(dst.parPrefix, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_PAR_PREFIX], KEY_PAR_PREFIX).asString());
     copy_string(dst.dstPrefix, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_DST_PREFIX], KEY_DST_PREFIX).asString());
+    copy_string(dst.outputDirectory, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_OUTPUT_DIRECTORY], KEY_OUTPUT_DIRECTORY).asString());
+    copy_string(dst.outputFilePrefix, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_OUTPUT_FILE_PREFIX], KEY_OUTPUT_DIRECTORY).asString());
+
     dst.coreFSC = JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_CORE_FSC], KEY_CORE_FSC).asBool();
     dst.maskFSC = JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_MASK_FSC], KEY_MASK_FSC).asBool();
     dst.parGra = JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_PAR_GRA], KEY_PAR_GRA).asBool();
@@ -252,6 +255,29 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    Json::Reader jsonReader;
+    Json::Value jsonRoot;
+    OptimiserPara thunderPara;
+    ifstream jsonFile(argv[1], ios::binary);
+    if (!jsonFile.is_open())
+    {
+        fprintf(stderr, "Fail to Open JSON [%s] Parameter File\n", argv[1]);
+        abort();
+    }
+
+    if(jsonReader.parse(jsonFile, jsonRoot))
+    {
+        readPara(thunderPara, jsonRoot);
+    }
+    
+    fprintf(stderr, "output directory: %s, output file prefix: %s\n", thunderPara.outputDirectory, thunderPara.outputFilePrefix);
+   
+    return 0; 
+
+    
+
+
+
     loggerInit(argc, argv);
 
     MPI_Init(&argc, &argv);
@@ -291,13 +317,7 @@ int main(int argc, char* argv[])
     CLOG(INFO, "LOGGER_SYS") << "Initialising Processes";
 #endif
 
-    /***
-    RFLOAT sTime = 0.0;
-    RFLOAT eTime = 0.0;
-
-    if (rank == 0) sTime = MPI_Wtime();
-    ***/
-
+    
 #ifdef VERBOSE_LEVEL_1
     CLOG(INFO, "LOGGER_SYS") << "Process " << rank << " Initialised";
 #endif
@@ -413,23 +433,6 @@ int main(int argc, char* argv[])
     if (rank == 0) CLOG(INFO, "LOGGER_SYS") << "Running";
 
     opt.run();
-
-    /***
-    if (rank == 0)
-    {
-        eTime = MPI_Wtime();
-
-        int totalSeconds = (int)(eTime - sTime);
-
-        char timeBuffer[512];
-
-        memset(timeBuffer, '\0', sizeof(timeBuffer));
-
-        fmt_time(totalSeconds, timeBuffer);
-
-        fprintf(stderr, "Elapse Time: %s\n", timeBuffer);
-    }
-    ***/
 
     MPI_Finalize();
 
