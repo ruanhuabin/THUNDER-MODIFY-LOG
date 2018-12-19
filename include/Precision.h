@@ -1,4 +1,4 @@
-/** @file
+/** @file Precision.h
  *  @author Huabin Ruan
  *  @version 1.4.11.180913
  *  @copyright THUNDER Non-Commercial Software License Agreement
@@ -9,29 +9,10 @@
  *  Huabin Ruan | 2018/09/13 | 1.4.11.080913 | Add header for file and functions
  *  Mingxu Hu   | 2018/09/28 | 1.4.11.080928 | Add mathmatical background of some scientific functions
  *
- *  @brief Precision.h encapsulates the header files/MACRO/data structures/functions of the single-precision version and the double-precision version.
- *
- *  Random Number Distributions
- *  ===========================
- *
- * Continuous random number distributions are defined by a probability density function, @f$p(x)@f$, such that the probability of @f$x@f$ occurring in the infinitesimal range @f$x@f$ to @f$x + \mathrm{d}x@f$ is @f$p\mathrm{d}x@f$.
- *
- * The cumulative distribution function for the lower tail @f$P(x)@f$ is defined by the integral,
- * \f[
- *   P(x) = \int_{-\infty}^{x}\mathrm{d}x'p(x')
- * \f]
- * and gives the probability of a variate taking a value less than @f$x@f$.
- *
- * The cumulative distribution function for the uppper tail @f$Q(x)@f$ is defined by the integral,
- * \f[
- *   Q(x) = \int_{x}^{\infty}\mathrm{d}x'p(x')
- * \f]
- * and gives the probability of a variate taking a value greater than @f$x@f$.
- *
- * The upper and lower cumulative distribution functions are related by @f$P(x) + Q(x) = 1@f$, and satisfy @f$0 \leq P(x) \leq 1@f$, @f$0 \leq Q(x) \leq 1@f$.
- *
- * The inverse cumulative distributions, @f$x = P^{-1}(P)@f$ and @f$x = Q^{-1}(Q)@f$ give the values of @f$x@f$ which correspond to a specific value of @f$P@f$ or @f$Q@f$. They can be used to find confidence limits from probability function.
+ *  @brief Precision.h encapsulates the header files/MACRO/data structures/functions of the single-precision
+ *  version and the double-precision version.
  */
+
 
 #ifndef  PRECISION_H
 #define  PRECISION_H
@@ -297,10 +278,10 @@ RFLOAT TSGSL_pow_4(const RFLOAT x /**< [in] the argument whose @f$x^4@f$ is calc
 /**
  *  @brief Shuffle the data items in buffer base randomly.
  */
-void TSGSL_ran_shuffle (const gsl_rng *r, /**< [in] randon engine used for randomness. */
-                        void *base,       /**< [in,out] data elements to be shuffled. */
-                        size_t nmembm,    /**< [in] number of data items to be shuffled. */
-                        size_t size       /**< [in] size of each data items. */
+void TSGSL_ran_shuffle (const  gsl_rng *r, /**< [in] randon engine used for randomness.   */
+                        void   *base     , /**< [in,out] data elements to be shuffled.    */
+                        size_t nmembm    , /**< [in] number of data items to be shuffled. */
+                        size_t size        /**< [in] size of each data items.             */
                        );
 
 

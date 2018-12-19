@@ -194,7 +194,7 @@ struct OptimiserPara
 
     char outputDirectory[FILE_NAME_LENGTH];
 
-#define KEY_OUTPUT_FILE_PREFIX "Prefix of Output File"
+#define KEY_OUTPUT_FILE_PREFIX "Output File Prefix"
 
     char outputFilePrefix[PREFIX_MAX_LEN];
 
