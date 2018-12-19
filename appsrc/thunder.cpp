@@ -131,7 +131,7 @@ void readPara(OptimiserPara &dst,
     copy_string(dst.initModel, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_INIT_MODEL], KEY_INIT_MODEL).asString());
     copy_string(dst.db, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_DB], KEY_DB).asString());
     copy_string(dst.parPrefix, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_PAR_PREFIX], KEY_PAR_PREFIX).asString());
-    copy_string(dst.dstPrefix, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_DST_PREFIX], KEY_DST_PREFIX).asString());
+    //copy_string(dst.dstPrefix, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_DST_PREFIX], KEY_DST_PREFIX).asString());
     copy_string(dst.outputDirectory, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_OUTPUT_DIRECTORY], KEY_OUTPUT_DIRECTORY).asString());
     copy_string(dst.outputFilePrefix, JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_OUTPUT_FILE_PREFIX], KEY_OUTPUT_FILE_PREFIX).asString());
     dst.coreFSC = JSONCPP_READ_ERROR_HANDLER(src["Basic"][KEY_CORE_FSC], KEY_CORE_FSC).asBool();
@@ -236,7 +236,7 @@ void logPara(const Json::Value src)
 INITIALIZE_EASYLOGGINGPP
 
 
-void genLogFileFullName(char *logFileFullName, Json::Reader &jsonReader, Json::Value &jsonRoot, OptimiserPara &thunderPara, const char *jsonFileName)
+void genLogFileFullNameAndSetDstPrefix(char *logFileFullName, Json::Reader &jsonReader, Json::Value &jsonRoot, OptimiserPara &thunderPara, const char *jsonFileName)
 {
     ifstream jsonFile(jsonFileName, ios::binary);
 
@@ -277,18 +277,18 @@ void genLogFileFullName(char *logFileFullName, Json::Reader &jsonReader, Json::V
     {
         strcpy(finalOutputDir, currWorkDir);
         strcat(finalOutputDir, "/");
-
+        /**
+         *  Charactors "./" should not appear in the path
+         */
         if (outputDir[0] == '.' && outputDir[1] == '/')
         {
             int k = 2;
-
             for (int i = strlen(finalOutputDir); outputDir[k] != '\0'; i ++)
             {
                 finalOutputDir[i] = outputDir[k];
                 k ++;
             }
         }
-
         else
         {
             strcat(finalOutputDir, outputDir);
@@ -300,10 +300,21 @@ void genLogFileFullName(char *logFileFullName, Json::Reader &jsonReader, Json::V
         strcpy(finalOutputDir, outputDir);
     }
 
-    //char logFileFullName[FILE_NAME_LENGTH];
-    //memset(logFileFullName, '\0', sizeof(logFileFullName));
     strcpy(logFileFullName, finalOutputDir);
     strcat(logFileFullName, "thunder.log");
+
+    /**
+     *  Construct value for dstPrefix 
+     */
+   strcpy(thunderPara.dstPrefix, finalOutputDir);
+   strcat(thunderPara.dstPrefix, thunderPara.outputFilePrefix);
+   len = strlen(thunderPara.outputFilePrefix);
+   if(len > 0 && thunderPara.outputFilePrefix[len - 1] != '_')
+   {
+        strcat(thunderPara.dstPrefix, "_");
+   }
+
+
 
 }
 int main(int argc, char *argv[])
@@ -335,9 +346,8 @@ int main(int argc, char *argv[])
     OptimiserPara thunderPara;
     char logFileFullName[FILE_NAME_LENGTH];
     memset(logFileFullName, '\0', sizeof(logFileFullName));
-    genLogFileFullName(logFileFullName, jsonReader, jsonRoot, thunderPara, argv[1]);
+    genLogFileFullNameAndSetDstPrefix(logFileFullName, jsonReader, jsonRoot, thunderPara, argv[1]);
     loggerInit(logFileFullName);
-    printf("output dir = %s\n", thunderPara.outputDirectory);
 
 
     //ifstream jsonFile(argv[1], ios::binary);
